@@ -44,7 +44,7 @@
 #include "ShellExec.h"
 
 /**************************************************************************************/
- JNIEXPORT jint JNICALL Java_ShellExec_execute( JNIEnv *e, jobject o, jstring command )
+ JNIEXPORT jint JNICALL Java_at_redeye_Plugins_ShellExec_ShellExec_execute( JNIEnv *e, jobject o, jstring command )
 /**************************************************************************************/
 {
  const jbyte *cmd = (*e)->GetStringUTFChars( e, command, NULL ) ;
