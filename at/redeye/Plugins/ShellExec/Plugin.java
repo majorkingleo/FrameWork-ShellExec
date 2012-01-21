@@ -58,6 +58,8 @@ public class Plugin implements at.redeye.FrameWork.Plugin.Plugin, OpenUrlInterfa
 
             if( Setup.is_win_system() )
                 HyperlinkExecuter.setOpenUrl(this);
+            
+            ShellExec.init(obj.getClass());
         }
     }
 

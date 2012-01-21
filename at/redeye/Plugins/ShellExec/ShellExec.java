@@ -47,10 +47,21 @@ import java.io.OutputStream;
 /******************************************************************************/
 public class ShellExec {
 
+    public static boolean library_loaded = false;
+    
+    public ShellExec()
+    {
+        init(this.getClass());
+    }
+    
     public native int execute(String document);
 
 // Load our native library from PATH or CLASSPATH when this class is loaded.
-    static {
+    protected static void init(Class loader) {
+        
+        if( library_loaded )
+            return;
+        
         // The CLASSPATH searching code below was written by Jim McBeath
         // and contributed to the jRegistryKey project,
         // after which it was modified and used here.
@@ -64,9 +75,11 @@ public class ShellExec {
                 File f = new File(appDir, libname);
                 String path = f.getAbsolutePath();
                 System.load(path);	// load JNI code
+                library_loaded = true;
             } else {
                 // No specified location for DLL, look through PATH
                 System.loadLibrary("HSWShellExec");
+                library_loaded = true;
             }
         } catch (UnsatisfiedLinkError ex) {
             // didn't find it in our PATH, look for it in CLASSPATH
@@ -105,10 +118,9 @@ public class ShellExec {
 
 
             if (!foundIt) {
-                try {
-                    ClassLoader cl = ShellExec.class.getClassLoader();
+                try {                    
 
-                    InputStream in = cl.getResourceAsStream("/at/redeye/Plugins/ShellExec/" + libname);
+                    InputStream in = loader.getResourceAsStream("/at/redeye/Plugins/ShellExec/" + libname);
                     if (in == null) {
                         throw new Exception("libname: " + libname + " not found");
                     }
@@ -123,7 +135,7 @@ public class ShellExec {
                     out.close();
 
                     System.load(tmplib.getAbsolutePath());
-
+                    library_loaded = true;
                     foundIt = Boolean.TRUE;
 
                     System.out.println(libname + " loaded via tmp generated pathname: " + tmplib.getAbsolutePath());
