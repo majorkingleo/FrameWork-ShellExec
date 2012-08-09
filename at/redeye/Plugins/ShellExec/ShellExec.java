@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.AccessControlException;
 
 /******************************************************************************/
 /*                                                                            */
@@ -67,6 +68,16 @@ public class ShellExec {
         // after which it was modified and used here.
         String libname = "HSWShellExec_" + System.getProperty("os.arch") + ".dll";
 
+        try {
+            System.loadLibrary("libname");
+            library_loaded = true;
+            return;
+        } catch( UnsatisfiedLinkError ex ) {
+            
+        } catch( AccessControlException ex ) {
+            
+        }
+                
         try {
             String appDir = System.getProperty("HSWShellExec_HOME");
             // allow application to specify our JNI location
